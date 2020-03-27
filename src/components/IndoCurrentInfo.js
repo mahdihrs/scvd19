@@ -31,12 +31,12 @@ const InfoCurrentInfo = () => {
     <Container maxWidth="lg" className={classes.indoCurrentInfoContainer}>
       {!loading && (
         <Grid container justify="space-evenly">
-          <Grid item className={classes.indoFlagOuterContainer}>
+          <Grid xs={12} sm={6} item className={classes.indoFlagOuterContainer}>
             <div className={classes.indoFlagContainer}>
               <img src={indonesiaCases.countryInfo.flag} className={classes.indoFlag} alt="Indonesia Flag" />
             </div>
           </Grid>
-          <Grid item>
+          <Grid xs={12} sm={4} md={3} item>
             <div>
               <h2><strong>{indonesiaCases.country}</strong></h2>
             </div>

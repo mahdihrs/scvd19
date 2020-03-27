@@ -20,16 +20,17 @@ const StyledTableCell = withStyles(theme => ({
     color: theme.palette.common.white,
   },
   body: {
-    fontSize: 14,
-  },
+    width: 400,
+    fontSize: 12,
+  }
 }))(TableCell);
 
 const StyledTableRow = withStyles(theme => ({
   root: {
     '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
+      backgroundColor: theme.palette.background.default
     },
-  },
+  }
 }))(TableRow);
 
 const AllCountries = () => {
@@ -43,7 +44,7 @@ const AllCountries = () => {
   const allCountriesCases = () => {
     axios.get('https://corona.lmao.ninja/countries')
       .then(({ data }) => {
-        setCases(data.slice(0, 100));
+        setCases(data.slice(0, 10));
       })
       .catch(err => {
         console.log(err)
@@ -52,11 +53,11 @@ const AllCountries = () => {
 
   return (
     <Container maxWidth="lg">
-      <TableContainer component={Paper}>
-        <Table stickyHeader className={classes.table} aria-label="sticky table">
+      <TableContainer>
+        <Table stickyHeader className={classes.table}>
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center">Country</StyledTableCell>
+              <StyledTableCell size="small" align="center">Country</StyledTableCell>
               <StyledTableCell align="center">Cases</StyledTableCell>
               <StyledTableCell align="center">Deaths</StyledTableCell>
               <StyledTableCell align="center">Recovered</StyledTableCell>
@@ -65,7 +66,7 @@ const AllCountries = () => {
           <TableBody>
             {cases.map(cov => (
               <StyledTableRow key={cov.country}>
-                <StyledTableCell align="center">
+                <StyledTableCell size="small" align="center">
                   <img src={cov.countryInfo.flag} alt={cov.country} className={classes.flag} />
                   <div>{cov.countryInfo.iso3}</div>
                 </StyledTableCell>

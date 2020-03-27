@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 700,
   },
   flag: {
-    width: 50
+    width: 30
   },
   indoFlagContainer: {
     border: '1px solid black',
