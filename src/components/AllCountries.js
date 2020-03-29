@@ -1,59 +1,50 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { withStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 
-import useStyles from '../styles';
-
-const StyledTableCell = withStyles(theme => ({
-  head: {
-    backgroundColor: theme.palette.common.black,
-    color: theme.palette.common.white,
-  },
-  body: {
-    width: 400,
-    fontSize: 12,
-  }
-}))(TableCell);
-
-const StyledTableRow = withStyles(theme => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default
-    },
-  }
-}))(TableRow);
+import useStyles, { StyledTableCell, StyledTableRow } from '../styles';
 
 const AllCountries = () => {
   const classes = useStyles();
   const [cases, setCases] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  //pagination
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+  const [selected, setSelected] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   useEffect(() => {
     allCountriesCases();
   }, []);
 
-  const allCountriesCases = () => {
-    axios.get('https://corona.lmao.ninja/countries')
-      .then(({ data }) => {
-        setCases(data.slice(0, 10));
-      })
-      .catch(err => {
-        console.log(err)
-      })
+  const allCountriesCases = async () => {
+    const { data } = await axios.get('https://corona.lmao.ninja/countries');
+    setLoading(false);
+    setCases(data);
   }
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = event => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   return (
     <Container maxWidth="lg">
-      <TableContainer>
+      <TableContainer component={Paper}>
         <Table stickyHeader className={classes.table}>
           <TableHead>
             <TableRow>
@@ -63,8 +54,11 @@ const AllCountries = () => {
               <StyledTableCell align="center">Recovered</StyledTableCell>
             </TableRow>
           </TableHead>
+          {loading && (
+            <div>Loading ...</div>
+          )}
           <TableBody>
-            {cases.map(cov => (
+            {cases.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(cov => (
               <StyledTableRow key={cov.country}>
                 <StyledTableCell size="small" align="center">
                   <img src={cov.countryInfo.flag} alt={cov.country} className={classes.flag} />
@@ -77,8 +71,16 @@ const AllCountries = () => {
             ))}
           </TableBody>
         </Table>
-        {/* <TablePagination rowsPerPageOptions={[10, 50]} /> */}
       </TableContainer>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25, 50]}
+        component="div"
+        count={cases.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onChangePage={handleChangePage}
+        onChangeRowsPerPage={handleChangeRowsPerPage}
+      />
     </Container>
   )
 }
